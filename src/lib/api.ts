@@ -203,8 +203,8 @@ export async function createClientOnPanel(orderId: string, regionId?: string | n
 
 // Get orders for a UUID
 export async function getOrders(uuid: string) {
-  const { data, error } = await (supabase
-    .from("orders") as any)
+  const { data, error } = await (supabase as any)
+    .from("orders")
     .select("*")
     .eq("uuid", uuid)
     .order("created_at", { ascending: false })

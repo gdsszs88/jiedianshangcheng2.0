@@ -189,8 +189,8 @@ export default function ClientPortal() {
       .catch(() => {});
     // Fetch video embed
     import("@/integrations/supabase/client").then(({ supabase }) => {
-      (supabase
-        .from("admin_config") as any)
+      (supabase as any)
+        .from("admin_config")
         .select("video_embed")
         .limit(1)
         .single()
