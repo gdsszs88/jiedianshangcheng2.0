@@ -98,8 +98,8 @@ export async function getPlans() {
 }
 
 export async function getPlanRegions() {
-  const { data, error } = await (supabase
-    .from("plan_regions") as any)
+  const { data, error } = await (supabase as any)
+    .from("plan_regions")
     .select("*");
   if (error) throw error;
   return data || [];
