@@ -17,8 +17,8 @@ export default function FloatingButtons() {
   const [cfg, setCfg] = useState<FabConfig>(DEFAULTS);
 
   useEffect(() => {
-    (supabase
-      .from("admin_config") as any)
+    (supabase as any)
+      .from("admin_config")
       .select("tawk_id, qq_qrcode_url, telegram_link")
       .limit(1)
       .single()
