@@ -329,7 +329,7 @@ export default function AdminDashboard() {
   };
 
   const updatePlanField = (id: string, field: keyof Plan, value: any) => {
-    setPlans(plans.map(p => p.id === id ? { ...p, [field]: value } : p));
+    setPlans(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
 
   // Region CRUD
