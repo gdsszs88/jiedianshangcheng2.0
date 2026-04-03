@@ -244,7 +244,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Update order status to fulfilled and save client UUID
+    // Update order status to fulfilled and save client UUID + panel info
     const clientUuid = credentials.uuid || credentials.username || "";
     await supabase
       .from("orders")
@@ -252,6 +252,9 @@ Deno.serve(async (req) => {
         status: "fulfilled",
         fulfilled_at: new Date().toISOString(),
         uuid: clientUuid || undefined,
+        inbound_id: salesInboundId,
+        inbound_remark: inbound.remark || "",
+        client_remark: remark,
       })
       .eq("id", orderId);
 
