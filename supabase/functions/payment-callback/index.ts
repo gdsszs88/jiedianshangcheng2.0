@@ -492,6 +492,9 @@ Deno.serve(async (req) => {
             } else {
               await supabase.from("orders").update({
                 status: "paid_unfulfilled",
+                inbound_id: client.inboundId,
+                inbound_remark: client.inboundRemark || "",
+                client_remark: clientRemark || "",
                 ...(clientRemark && !order.email ? { email: clientRemark } : {}),
               }).eq("id", order.id);
               finalStatus = "paid_unfulfilled";
