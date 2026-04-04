@@ -450,7 +450,8 @@ export default function ClientPortal() {
           } else {
             setPayStatus("success");
             if (checkoutData) {
-              const newExpiry = new Date(clientData.expiryDate);
+              const baseExpiry = clientData.expiryDate === 0 ? Date.now() : clientData.expiryDate;
+              const newExpiry = new Date(baseExpiry);
               newExpiry.setDate(newExpiry.getDate() + checkoutData.months * 30);
               setClientData({ ...clientData, trafficUsed: 0, expiryDate: newExpiry.getTime() });
             }
