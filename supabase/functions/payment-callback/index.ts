@@ -253,6 +253,7 @@ async function findClient(panelUrl: string, cookie: string, identifier: string) 
           const expiryTime = isSocks5 ? inbound.expiryTime || 0 : entry.expiryTime || 0;
           return {
             inboundId: inbound.id,
+            inboundRemark: inbound.remark || "",
             email,
             expiryTime,
             isSocks5,
@@ -481,6 +482,9 @@ Deno.serve(async (req) => {
                 .update({
                   status: "fulfilled",
                   fulfilled_at: new Date().toISOString(),
+                  inbound_id: client.inboundId,
+                  inbound_remark: client.inboundRemark || "",
+                  client_remark: clientRemark || "",
                   ...(clientRemark && !order.email ? { email: clientRemark } : {}),
                 })
                 .eq("id", order.id);
@@ -488,6 +492,9 @@ Deno.serve(async (req) => {
             } else {
               await supabase.from("orders").update({
                 status: "paid_unfulfilled",
+                inbound_id: client.inboundId,
+                inbound_remark: client.inboundRemark || "",
+                client_remark: clientRemark || "",
                 ...(clientRemark && !order.email ? { email: clientRemark } : {}),
               }).eq("id", order.id);
               finalStatus = "paid_unfulfilled";

@@ -90,6 +90,8 @@ interface Order {
   tx_hash: string | null;
   months: number;
   remark?: string;
+  inbound_remark?: string;
+  client_remark?: string;
 }
 
 const defaultConfig: AdminConfigData = {
@@ -1330,6 +1332,8 @@ export default function AdminDashboard() {
                                 </button>
                               </div>
                               {order.remark && <div className="text-xs text-muted-foreground mt-0.5">📝 {order.remark}</div>}
+                              {order.inbound_remark && <div className="text-xs text-muted-foreground">📡 入站: {order.inbound_remark}</div>}
+                              {order.client_remark && <div className="text-xs text-muted-foreground">👤 客户端: {order.client_remark}</div>}
                             </td>
                             <td className="py-3 px-2">
                               <span className="font-medium">{order.plan_name}</span>

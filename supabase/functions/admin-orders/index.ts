@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
         .order("created_at", { ascending: false });
 
       if (search) {
-        query = query.or(`uuid.ilike.%${search}%,plan_name.ilike.%${search}%,email.ilike.%${search}%`);
+        query = query.or(`uuid.ilike.%${search}%,plan_name.ilike.%${search}%,email.ilike.%${search}%,inbound_remark.ilike.%${search}%,client_remark.ilike.%${search}%`);
       }
 
       if (statusFilter && statusFilter !== "all") {
@@ -134,7 +134,7 @@ Deno.serve(async (req) => {
 
       const enrichedOrders = (ordersResult.data || []).map((order: any) => ({
         ...order,
-        remark: remarkMap[order.uuid] || order.email || "",
+        remark: remarkMap[order.uuid] || order.client_remark || order.email || "",
       }));
 
       return new Response(JSON.stringify({ orders: enrichedOrders, total: ordersResult.count }), {
