@@ -292,7 +292,7 @@ export default function ClientPortal() {
       const res = await lookupClient(extracted);
       if (res?.success) {
         setClientData({
-          expiryDate: res.expiryDate || Date.now() + 30 * 86400000,
+          expiryDate: res.expiryDate ?? 0,
           trafficUsed: res.trafficUsed ?? 0,
           trafficTotal: res.trafficTotal ?? 100,
           email: res.email || "",
@@ -308,7 +308,10 @@ export default function ClientPortal() {
     }
   };
 
-  const getDaysLeft = () => Math.max(0, Math.ceil((clientData.expiryDate - Date.now()) / 86400000));
+  const getDaysLeft = () => {
+    if (clientData.expiryDate === 0) return -1; // unlimited
+    return Math.max(0, Math.ceil((clientData.expiryDate - Date.now()) / 86400000));
+  };
 
   const cleanupPolling = () => {
     if (pollRef.current) {
@@ -447,7 +450,8 @@ export default function ClientPortal() {
           } else {
             setPayStatus("success");
             if (checkoutData) {
-              const newExpiry = new Date(clientData.expiryDate);
+              const baseExpiry = clientData.expiryDate === 0 ? Date.now() : clientData.expiryDate;
+              const newExpiry = new Date(baseExpiry);
               newExpiry.setDate(newExpiry.getDate() + checkoutData.months * 30);
               setClientData({ ...clientData, trafficUsed: 0, expiryDate: newExpiry.getTime() });
             }
@@ -784,13 +788,21 @@ export default function ClientPortal() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-client-primary/5 p-6 rounded-2xl border border-client-primary/20">
                   <div className="text-client-primary font-bold mb-2">剩余时间</div>
-                  <div className="flex items-end">
-                    <span className="text-5xl font-extrabold text-foreground">{getDaysLeft()}</span>
-                    <span className="text-client-primary font-bold mb-1 ml-2">天</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-3 font-medium">
-                    到期日: {new Date(clientData.expiryDate).toLocaleDateString()}
-                  </p>
+                  {getDaysLeft() < 0 ? (
+                    <div className="flex items-end">
+                      <span className="text-3xl font-extrabold text-foreground">无限期</span>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-end">
+                        <span className="text-5xl font-extrabold text-foreground">{getDaysLeft()}</span>
+                        <span className="text-client-primary font-bold mb-1 ml-2">天</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-3 font-medium">
+                        到期日: {new Date(clientData.expiryDate).toLocaleDateString()}
+                      </p>
+                    </>
+                  )}
                 </div>
                 <div className="bg-success/5 p-6 rounded-2xl border border-success/20">
                   <div className="text-success font-bold mb-2">本月流量使用情况</div>
