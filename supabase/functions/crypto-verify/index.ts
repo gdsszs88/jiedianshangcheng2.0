@@ -61,11 +61,11 @@ async function findClient(panelUrl: string, cookie: string, uuid: string) {
 }
 
 // Extend client expiry
-async function extendExpiry(panelUrl: string, cookie: string, inboundId: number, email: string, currentExpiry: number, months: number): Promise<boolean> {
+async function extendExpiry(panelUrl: string, cookie: string, inboundId: number, email: string, currentExpiry: number, durationDays: number): Promise<boolean> {
   const baseUrl = panelUrl.replace(/\/+$/, "");
   const now = Date.now();
   const baseTime = (currentExpiry > 0 && currentExpiry > now) ? currentExpiry : now;
-  const newExpiry = baseTime + months * 30 * 24 * 60 * 60 * 1000;
+  const newExpiry = baseTime + durationDays * 24 * 60 * 60 * 1000;
 
   // Reset traffic
   await fetchUnsafe(`${baseUrl}/panel/api/inbounds/${inboundId}/resetClientTraffic/${encodeURIComponent(email)}`, {
@@ -237,7 +237,8 @@ Deno.serve(async (req) => {
           const client = await findClient(config.panel_url, cookie, order.uuid);
           if (client) {
             clientRemark = client.email || "";
-            const success = await extendExpiry(config.panel_url, cookie, client.inboundId, client.email, client.expiryTime, order.months);
+            const durationDays = order.duration_days || (order.months * 30);
+            const success = await extendExpiry(config.panel_url, cookie, client.inboundId, client.email, client.expiryTime, durationDays);
             if (success) {
               await supabase.from("orders").update({
                 status: "fulfilled",

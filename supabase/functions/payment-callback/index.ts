@@ -272,15 +272,15 @@ async function extendExpiry(
   inboundId: number,
   email: string,
   currentExpiry: number,
-  months: number,
+  durationDays: number,
   isSocks5: boolean,
 ): Promise<boolean> {
   const baseUrl = panelUrl.replace(/\/+$/, "");
 
-  // Calculate new expiry: if current expiry is 0 or in the past, start from now
+  // Calculate new expiry using actual duration_days
   const now = Date.now();
   const baseTime = currentExpiry > 0 && currentExpiry > now ? currentExpiry : now;
-  const newExpiry = baseTime + months * 30 * 24 * 60 * 60 * 1000;
+  const newExpiry = baseTime + durationDays * 24 * 60 * 60 * 1000;
 
   if (isSocks5) {
     // SOCKS5: reset traffic at inbound level (set up/down to 0) and update inbound expiryTime
@@ -467,13 +467,14 @@ Deno.serve(async (req) => {
           const client = await findClient(config.panel_url, cookie, order.uuid);
           if (client) {
             clientRemark = client.email || "";
+            const durationDays = order.duration_days || (order.months * 30);
             const success = await extendExpiry(
               config.panel_url,
               cookie,
               client.inboundId,
               client.email,
               client.expiryTime,
-              order.months,
+              durationDays,
               client.isSocks5,
             );
             if (success) {
@@ -551,7 +552,7 @@ Deno.serve(async (req) => {
       const { action } = body;
 
       if (action === "create-order") {
-        const { uuid, planName, months, amount, paymentMethod, cryptoAmount, cryptoCurrency, email } = body;
+        const { uuid, planName, months, durationDays, amount, paymentMethod, cryptoAmount, cryptoCurrency, email } = body;
 
         if (!uuid || !planName || !months || !amount || !paymentMethod) {
           return new Response(JSON.stringify({ error: "缺少必要参数" }), {
@@ -568,6 +569,7 @@ Deno.serve(async (req) => {
             uuid,
             plan_name: planName,
             months,
+            duration_days: durationDays || (months * 30),
             amount,
             payment_method: paymentMethod,
             trade_no: tradeNo,

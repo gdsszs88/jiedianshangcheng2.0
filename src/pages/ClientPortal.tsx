@@ -137,7 +137,7 @@ export default function ClientPortal() {
   const [dynamicPlanRegions, setDynamicPlanRegions] = useState<{ plan_id: string; region_id: string }[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
-  const [checkoutData, setCheckoutData] = useState<{ months: number; price: number; planName: string; type: string; regionId?: string | null } | null>(null);
+  const [checkoutData, setCheckoutData] = useState<{ months: number; durationDays: number; price: number; planName: string; type: string; regionId?: string | null } | null>(null);
   const [newClientCredentials, setNewClientCredentials] = useState<Record<string, string> | null>(null);
   const [newClientConnectionInfo, setNewClientConnectionInfo] = useState<Record<string, any> | null>(null);
   const [newClientRemark, setNewClientRemark] = useState("");
@@ -326,9 +326,9 @@ export default function ClientPortal() {
 
   useEffect(() => () => cleanupPolling(), []);
 
-  const initiateCheckout = (months: number, price: number, planName: string, type = "renew", regionId?: string | null) => {
+  const initiateCheckout = (months: number, price: number, planName: string, type = "renew", regionId?: string | null, durationDays?: number) => {
     cleanupPolling();
-    setCheckoutData({ months, price, planName, type, regionId });
+    setCheckoutData({ months, durationDays: durationDays || months * 30, price, planName, type, regionId });
     setSelectedMethod("");
     setPayStatus(null);
     setOrderId("");
@@ -381,6 +381,7 @@ export default function ClientPortal() {
         uuid,
         planName: checkoutData.planName,
         months: checkoutData.months,
+        durationDays: checkoutData.durationDays,
         amount: checkoutData.price,
         paymentMethod: method,
         cryptoAmount: computedPrice,
@@ -452,7 +453,7 @@ export default function ClientPortal() {
             if (checkoutData) {
               const baseExpiry = clientData.expiryDate === 0 ? Date.now() : clientData.expiryDate;
               const newExpiry = new Date(baseExpiry);
-              newExpiry.setDate(newExpiry.getDate() + checkoutData.months * 30);
+              newExpiry.setDate(newExpiry.getDate() + checkoutData.durationDays);
               setClientData({ ...clientData, trafficUsed: 0, expiryDate: newExpiry.getTime() });
             }
           }
@@ -493,6 +494,7 @@ export default function ClientPortal() {
         uuid,
         planName: checkoutData.planName,
         months: checkoutData.months,
+        durationDays: checkoutData.durationDays,
         amount: checkoutData.price,
         paymentMethod: selectedMethod,
         ...(isCrypto ? { cryptoAmount: cryptoPrice, cryptoCurrency: selectedMethod.toUpperCase() } : {}),
@@ -530,8 +532,9 @@ export default function ClientPortal() {
         cleanupPolling();
         setPayStatus("success");
         if (checkoutData) {
-          const newExpiry = new Date(clientData.expiryDate);
-          newExpiry.setDate(newExpiry.getDate() + checkoutData.months * 30);
+          const baseExpiry = clientData.expiryDate === 0 ? Date.now() : clientData.expiryDate;
+          const newExpiry = new Date(baseExpiry);
+          newExpiry.setDate(newExpiry.getDate() + checkoutData.durationDays);
           setClientData({ ...clientData, trafficUsed: 0, expiryDate: newExpiry.getTime() });
         }
       } else {
@@ -907,7 +910,7 @@ export default function ClientPortal() {
                                 </li>
                               </ul>
                               <button
-                                onClick={() => initiateCheckout(plan.duration_months, plan.price, plan.title)}
+                                onClick={() => initiateCheckout(plan.duration_months, plan.price, plan.title, "renew", null, plan.duration_days)}
                                 className={`w-full font-bold py-3 rounded-xl transition-colors ${plan.featured ? "bg-client-primary text-client-primary-foreground hover:opacity-90 shadow-md" : "bg-client-primary/10 text-client-primary hover:bg-client-primary hover:text-client-primary-foreground"}`}
                               >
                                 立即购买
@@ -971,7 +974,7 @@ export default function ClientPortal() {
                                 </li>
                               </ul>
                               <button
-                                onClick={() => initiateCheckout(plan.duration_months, plan.price, plan.title)}
+                                onClick={() => initiateCheckout(plan.duration_months, plan.price, plan.title, "renew", null, plan.duration_days)}
                                 className={`w-full font-bold py-3 rounded-xl transition-colors ${plan.featured ? "bg-success text-success-foreground hover:opacity-90 shadow-md" : "bg-success/10 text-success hover:bg-success hover:text-success-foreground"}`}
                               >
                                 立即购买
@@ -1180,7 +1183,7 @@ export default function ClientPortal() {
                                         <li className="flex items-center"><ChevronRight className="w-4 h-4 text-client-primary mr-1 shrink-0" /> 有效期 {plan.duration_days} 天</li>
                                       </ul>
                                       <button
-                                        onClick={() => !isSoldOut && initiateCheckout(plan.duration_months, plan.price, plan.title, "buy_new", activeRegionId)}
+                                        onClick={() => !isSoldOut && initiateCheckout(plan.duration_months, plan.price, plan.title, "buy_new", activeRegionId, plan.duration_days)}
                                         disabled={isSoldOut}
                                         className={`w-full font-bold py-3 rounded-xl transition-colors ${isSoldOut ? "bg-muted text-muted-foreground cursor-not-allowed" : plan.featured ? "bg-client-primary text-client-primary-foreground hover:opacity-90 shadow-md" : "bg-client-primary/10 text-client-primary hover:bg-client-primary hover:text-client-primary-foreground"}`}>
                                         {isSoldOut ? "暂无库存，等待客服添加" : "购买开通"}
@@ -1216,7 +1219,7 @@ export default function ClientPortal() {
                                         <li className="flex items-center"><ChevronRight className="w-4 h-4 text-success mr-1 shrink-0" /> 有效期 {plan.duration_days} 天</li>
                                       </ul>
                                       <button
-                                        onClick={() => !isSoldOut && initiateCheckout(plan.duration_months, plan.price, plan.title, "buy_new", activeRegionId)}
+                                        onClick={() => !isSoldOut && initiateCheckout(plan.duration_months, plan.price, plan.title, "buy_new", activeRegionId, plan.duration_days)}
                                         disabled={isSoldOut}
                                         className={`w-full font-bold py-3 rounded-xl transition-colors ${isSoldOut ? "bg-muted text-muted-foreground cursor-not-allowed" : plan.featured ? "bg-success text-success-foreground hover:opacity-90 shadow-md" : "bg-success/10 text-success hover:bg-success hover:text-success-foreground"}`}>
                                         {isSoldOut ? "暂无库存，等待客服添加" : "购买开通"}

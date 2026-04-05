@@ -51,6 +51,7 @@ export async function createOrder(params: {
   uuid: string;
   planName: string;
   months: number;
+  durationDays: number;
   amount: number;
   paymentMethod: string;
   cryptoAmount?: number;
