@@ -1331,8 +1331,7 @@ export default function AdminDashboard() {
                                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                                 </button>
                               </div>
-                              {order.remark && <div className="text-xs text-muted-foreground mt-0.5">📝 {order.remark}</div>}
-                              {order.inbound_remark && <div className="text-xs text-muted-foreground">📡 入站: {order.inbound_remark}</div>}
+                              {order.inbound_remark && <div className="text-xs text-muted-foreground mt-0.5">📡 入站: {order.inbound_remark}</div>}
                               {order.client_remark && <div className="text-xs text-muted-foreground">👤 客户端: {order.client_remark}</div>}
                             </td>
                             <td className="py-3 px-2">
