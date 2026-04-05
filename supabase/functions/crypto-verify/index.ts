@@ -61,11 +61,11 @@ async function findClient(panelUrl: string, cookie: string, uuid: string) {
 }
 
 // Extend client expiry
-async function extendExpiry(panelUrl: string, cookie: string, inboundId: number, email: string, currentExpiry: number, months: number): Promise<boolean> {
+async function extendExpiry(panelUrl: string, cookie: string, inboundId: number, email: string, currentExpiry: number, durationDays: number): Promise<boolean> {
   const baseUrl = panelUrl.replace(/\/+$/, "");
   const now = Date.now();
   const baseTime = (currentExpiry > 0 && currentExpiry > now) ? currentExpiry : now;
-  const newExpiry = baseTime + months * 30 * 24 * 60 * 60 * 1000;
+  const newExpiry = baseTime + durationDays * 24 * 60 * 60 * 1000;
 
   // Reset traffic
   await fetchUnsafe(`${baseUrl}/panel/api/inbounds/${inboundId}/resetClientTraffic/${encodeURIComponent(email)}`, {
