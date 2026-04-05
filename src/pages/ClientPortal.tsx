@@ -326,9 +326,9 @@ export default function ClientPortal() {
 
   useEffect(() => () => cleanupPolling(), []);
 
-  const initiateCheckout = (months: number, price: number, planName: string, type = "renew", regionId?: string | null) => {
+  const initiateCheckout = (months: number, price: number, planName: string, type = "renew", regionId?: string | null, durationDays?: number) => {
     cleanupPolling();
-    setCheckoutData({ months, price, planName, type, regionId });
+    setCheckoutData({ months, durationDays: durationDays || months * 30, price, planName, type, regionId });
     setSelectedMethod("");
     setPayStatus(null);
     setOrderId("");
