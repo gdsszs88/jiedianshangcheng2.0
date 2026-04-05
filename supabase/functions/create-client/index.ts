@@ -145,8 +145,9 @@ Deno.serve(async (req) => {
     const inbound = inboundData.obj;
     const protocol = inbound.protocol; // actual protocol of the inbound
 
-    // Calculate expiry: order.months * 30 days from now
-    const expiryTime = Date.now() + order.months * 30 * 24 * 60 * 60 * 1000;
+    // Calculate expiry using duration_days from order (falls back to months * 30 for legacy orders)
+    const durationDays = order.duration_days || (order.months * 30);
+    const expiryTime = Date.now() + durationDays * 24 * 60 * 60 * 1000;
 
     // Remark/email for the new client - include 独享/共享 label
     const planName = (order.plan_name || "").toLowerCase();
