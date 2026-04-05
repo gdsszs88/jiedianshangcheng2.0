@@ -139,6 +139,7 @@ export type Database = {
           crypto_amount: number | null
           crypto_currency: string | null
           currency: string
+          duration_days: number
           email: string | null
           fulfilled_at: string | null
           id: string
@@ -162,6 +163,7 @@ export type Database = {
           crypto_amount?: number | null
           crypto_currency?: string | null
           currency?: string
+          duration_days?: number
           email?: string | null
           fulfilled_at?: string | null
           id?: string
@@ -185,6 +187,7 @@ export type Database = {
           crypto_amount?: number | null
           crypto_currency?: string | null
           currency?: string
+          duration_days?: number
           email?: string | null
           fulfilled_at?: string | null
           id?: string
