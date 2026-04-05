@@ -272,15 +272,15 @@ async function extendExpiry(
   inboundId: number,
   email: string,
   currentExpiry: number,
-  months: number,
+  durationDays: number,
   isSocks5: boolean,
 ): Promise<boolean> {
   const baseUrl = panelUrl.replace(/\/+$/, "");
 
-  // Calculate new expiry: if current expiry is 0 or in the past, start from now
+  // Calculate new expiry using actual duration_days
   const now = Date.now();
   const baseTime = currentExpiry > 0 && currentExpiry > now ? currentExpiry : now;
-  const newExpiry = baseTime + months * 30 * 24 * 60 * 60 * 1000;
+  const newExpiry = baseTime + durationDays * 24 * 60 * 60 * 1000;
 
   if (isSocks5) {
     // SOCKS5: reset traffic at inbound level (set up/down to 0) and update inbound expiryTime
