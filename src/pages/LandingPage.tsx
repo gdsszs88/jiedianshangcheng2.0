@@ -1,11 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import ThemeToggle from "@/components/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 
+function parseLandingImages(raw: string): string[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed.filter(Boolean);
+  } catch {}
+  return [raw];
+}
+
 export default function LandingPage() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
-  const [landingImage, setLandingImage] = useState("https://free.picui.cn/free/2026/03/28/69c75f365413d.png");
+  const [landingImages, setLandingImages] = useState<string[]>([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
     (supabase as any)
@@ -14,9 +24,20 @@ export default function LandingPage() {
       .limit(1)
       .single()
       .then(({ data }: any) => {
-        if (data?.landing_image) setLandingImage(data.landing_image);
+        if (data?.landing_image) {
+          setLandingImages(parseLandingImages(data.landing_image));
+        }
       });
   }, []);
+
+  // Auto-rotate carousel
+  useEffect(() => {
+    if (landingImages.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % landingImages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [landingImages.length]);
 
   const toggleFaq = (index: number) => {
     setActiveFaq(activeFaq === index ? null : index);
