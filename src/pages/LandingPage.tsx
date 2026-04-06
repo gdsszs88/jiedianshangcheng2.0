@@ -211,8 +211,34 @@ export default function LandingPage() {
               <li>原生真实物理节点，保障账号高权重与推流</li>
             </ul>
           </div>
-          <div className="lp-hero-image">
-            <img src={landingImage} alt="企业级静态住宅IP，专业解决AI降智、Claude封号、跨境短视频限流问题" />
+          <div className="lp-hero-image" style={{ position: "relative", overflow: "hidden" }}>
+            {landingImages.length > 0 ? (
+              landingImages.map((img, idx) => (
+                <img
+                  key={idx}
+                  src={img}
+                  alt="企业级静态住宅IP，专业解决AI降智、Claude封号、跨境短视频限流问题"
+                  style={{
+                    position: idx === 0 ? "relative" : "absolute",
+                    top: 0, left: 0, width: "100%",
+                    opacity: currentSlide === idx ? 1 : 0,
+                    transition: "opacity 0.8s ease-in-out",
+                  }}
+                />
+              ))
+            ) : null}
+            {landingImages.length > 1 && (
+              <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 12 }}>
+                {landingImages.map((_, idx) => (
+                  <button key={idx} onClick={() => setCurrentSlide(idx)}
+                    style={{
+                      width: 10, height: 10, borderRadius: "50%", border: "none", cursor: "pointer",
+                      background: currentSlide === idx ? "var(--lp-primary)" : "rgba(128,128,128,0.4)",
+                      transition: "background 0.3s",
+                    }} />
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
