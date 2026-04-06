@@ -1779,7 +1779,7 @@ export default function ClientPortal() {
                           </div>
                           <div>
                             <span className="block text-xs">时长</span>
-                            <span className="font-bold text-foreground">{order.months}个月</span>
+                            <span className="font-bold text-foreground">{order.duration_days || order.months * 30}天</span>
                           </div>
                           <div>
                             <span className="block text-xs">下单时间</span>
