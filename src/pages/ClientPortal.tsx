@@ -117,6 +117,15 @@ function parseVideoEmbed(raw: string): string {
   return "";
 }
 
+function fixMobileVideo(html: string): string {
+  if (!html) return "";
+  return html
+    .replace(/<iframe(?![^>]*playsinline)/g, '<iframe playsinline webkit-playsinline')
+    .replace(/<iframe(?![^>]*allow=)/g, '<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"')
+    .replace(/<video(?![^>]*playsinline)/g, '<video playsinline webkit-playsinline')
+    .replace(/<video(?![^>]*preload)/g, '<video preload="metadata"');
+}
+
 export default function ClientPortal() {
   const [logged, setLogged] = useState(false);
   const [uuid, setUuid] = useState("");
@@ -1874,7 +1883,7 @@ export default function ClientPortal() {
                         <div className="px-5 pb-5 border-t border-border">
                           <div
                             className="prose prose-sm max-w-none text-foreground mt-3"
-                            dangerouslySetInnerHTML={{ __html: t.content }}
+                            dangerouslySetInnerHTML={{ __html: fixMobileVideo(t.content) }}
                           />
                         </div>
                       )}
