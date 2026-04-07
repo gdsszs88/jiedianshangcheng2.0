@@ -19,11 +19,15 @@ async function fetchUnsafe(url: string, init?: RequestInit): Promise<Response> {
   }
 }
 
-// Safe JSON parse from Response (handles empty body)
+// Safe JSON parse from Response (handles empty/truncated body)
 async function safeJson(res: Response): Promise<any> {
-  const text = await res.text();
-  if (!text || text.trim().length === 0) return null;
-  try { return JSON.parse(text); } catch { return null; }
+  try {
+    const text = await res.text();
+    if (!text || text.trim().length === 0) return null;
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
 }
 
 // Login to 3x-ui and get session cookie
@@ -330,7 +334,7 @@ Deno.serve(async (req) => {
                   <hr><p style="color:#999;font-size:12px;">此邮件由系统自动发送</p>`,
               }),
             });
-            console.log("Stock-out notification email sent:", await emailRes.text());
+            try { console.log("Stock-out notification email sent:", await emailRes.text()); } catch { console.log("Stock-out notification email sent"); }
           } catch (emailErr) {
             console.error("Failed to send stock-out notification:", emailErr);
           }
