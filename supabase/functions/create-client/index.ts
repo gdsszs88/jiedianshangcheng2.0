@@ -334,7 +334,7 @@ Deno.serve(async (req) => {
                   <hr><p style="color:#999;font-size:12px;">此邮件由系统自动发送</p>`,
               }),
             });
-            console.log("Stock-out notification email sent:", await emailRes.text());
+            try { console.log("Stock-out notification email sent:", await emailRes.text()); } catch { console.log("Stock-out notification email sent"); }
           } catch (emailErr) {
             console.error("Failed to send stock-out notification:", emailErr);
           }
