@@ -197,7 +197,7 @@ Deno.serve(async (req) => {
         headers: { Cookie: cookie, "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString(),
       });
-      const updateBody = await updateRes.json();
+      const updateBody = await safeJson(updateRes);
       console.log("SOCKS5 add account result:", updateBody);
 
       if (!updateBody?.success) {
