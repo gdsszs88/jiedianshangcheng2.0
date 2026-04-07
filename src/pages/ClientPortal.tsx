@@ -1155,7 +1155,9 @@ export default function ClientPortal() {
                             <label className="block text-xs text-muted-foreground mb-1 font-bold">UUID</label>
                             <div className="flex items-center gap-2">
                               <code className="block flex-1 bg-muted p-2 rounded border border-border text-client-primary font-mono text-sm break-all">{newClientCredentials.uuid}</code>
-                              <button onClick={() => copyWithFeedback(newClientCredentials.uuid, "uuid")} className="text-client-primary hover:opacity-70">{copiedKey === "uuid" ? <CheckCircle2 className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}</button>
+                              <button onClick={() => copyWithFeedback(newClientCredentials.uuid, "uuid")} className="text-client-primary hover:opacity-70 shrink-0">
+                                {copiedKey === "uuid" ? <><CheckCircle2 className="w-4 h-4 text-green-500" /><span className="text-xs text-green-500 ml-1">已复制</span></> : <Copy className="w-4 h-4" />}
+                              </button>
                             </div>
                           </div>
                         )}
