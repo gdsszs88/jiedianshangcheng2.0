@@ -19,6 +19,13 @@ async function fetchUnsafe(url: string, init?: RequestInit): Promise<Response> {
   }
 }
 
+// Safe JSON parse from Response (handles empty body)
+async function safeJson(res: Response): Promise<any> {
+  const text = await res.text();
+  if (!text || text.trim().length === 0) return null;
+  try { return JSON.parse(text); } catch { return null; }
+}
+
 // Login to 3x-ui and get session cookie
 async function login3xui(panelUrl: string, username: string, password: string): Promise<string | null> {
   const baseUrl = panelUrl.replace(/\/+$/, "");
