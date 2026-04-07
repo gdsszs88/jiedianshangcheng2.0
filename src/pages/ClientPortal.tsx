@@ -1097,19 +1097,57 @@ export default function ClientPortal() {
 
                         {newClientCredentials.username ? (
                           <>
+                            {newClientConnectionInfo && (
+                              <>
+                                <div className="mb-4">
+                                  <label className="block text-xs text-muted-foreground mb-1 font-bold">🌐 服务器地址</label>
+                                  <div className="flex items-center gap-2">
+                                    <code className="block flex-1 bg-muted p-2 rounded border border-border text-client-primary font-mono text-sm">{newClientConnectionInfo.address}</code>
+                                    <button onClick={() => copyWithFeedback(newClientConnectionInfo.address, "address")} className="text-client-primary hover:opacity-70 shrink-0">
+                                      {copiedKey === "address" ? <><CheckCircle2 className="w-4 h-4 text-green-500" /><span className="text-xs text-green-500 ml-1">已复制</span></> : <Copy className="w-4 h-4" />}
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="mb-4">
+                                  <label className="block text-xs text-muted-foreground mb-1 font-bold">🔌 端口</label>
+                                  <div className="flex items-center gap-2">
+                                    <code className="block flex-1 bg-muted p-2 rounded border border-border text-client-primary font-mono text-lg">{newClientConnectionInfo.port}</code>
+                                    <button onClick={() => copyWithFeedback(String(newClientConnectionInfo.port), "port")} className="text-client-primary hover:opacity-70 shrink-0">
+                                      {copiedKey === "port" ? <><CheckCircle2 className="w-4 h-4 text-green-500" /><span className="text-xs text-green-500 ml-1">已复制</span></> : <Copy className="w-4 h-4" />}
+                                    </button>
+                                  </div>
+                                </div>
+                              </>
+                            )}
                             <div className="mb-4">
-                              <label className="block text-xs text-muted-foreground mb-1 font-bold">用户名</label>
+                              <label className="block text-xs text-muted-foreground mb-1 font-bold">👤 用户名</label>
                               <div className="flex items-center gap-2">
                                 <code className="block flex-1 bg-muted p-2 rounded border border-border text-client-primary font-mono text-lg">{newClientCredentials.username}</code>
-                                <button onClick={() => copyWithFeedback(newClientCredentials.username, "username")} className="text-client-primary hover:opacity-70">{copiedKey === "username" ? <CheckCircle2 className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}</button>
+                                <button onClick={() => copyWithFeedback(newClientCredentials.username, "username")} className="text-client-primary hover:opacity-70 shrink-0">
+                                  {copiedKey === "username" ? <><CheckCircle2 className="w-4 h-4 text-green-500" /><span className="text-xs text-green-500 ml-1">已复制</span></> : <Copy className="w-4 h-4" />}
+                                </button>
                               </div>
                             </div>
-                            <div className="mb-2">
-                              <label className="block text-xs text-muted-foreground mb-1 font-bold">密码</label>
+                            <div className="mb-4">
+                              <label className="block text-xs text-muted-foreground mb-1 font-bold">🔑 密码</label>
                               <div className="flex items-center gap-2">
                                 <code className="block flex-1 bg-muted p-2 rounded border border-border text-client-primary font-mono text-lg">{newClientCredentials.password}</code>
-                                <button onClick={() => copyWithFeedback(newClientCredentials.password, "password")} className="text-client-primary hover:opacity-70">{copiedKey === "password" ? <CheckCircle2 className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}</button>
+                                <button onClick={() => copyWithFeedback(newClientCredentials.password, "password")} className="text-client-primary hover:opacity-70 shrink-0">
+                                  {copiedKey === "password" ? <><CheckCircle2 className="w-4 h-4 text-green-500" /><span className="text-xs text-green-500 ml-1">已复制</span></> : <Copy className="w-4 h-4" />}
+                                </button>
                               </div>
+                            </div>
+                            <div className="mb-2 pt-3 border-t border-border">
+                              <label className="block text-xs text-muted-foreground mb-1 font-bold">📋 一键复制全部</label>
+                              <button
+                                onClick={() => copyWithFeedback(
+                                  `地址: ${newClientConnectionInfo?.address || ""}\n端口: ${newClientConnectionInfo?.port || ""}\n用户名: ${newClientCredentials.username}\n密码: ${newClientCredentials.password}`,
+                                  "all_socks"
+                                )}
+                                className="w-full flex items-center justify-center gap-2 bg-client-primary/10 hover:bg-client-primary/20 text-client-primary font-bold py-2.5 px-4 rounded-lg transition-all"
+                              >
+                                {copiedKey === "all_socks" ? <><CheckCircle2 className="w-5 h-5 text-green-500" /><span className="text-green-500">已复制全部信息！</span></> : <><Copy className="w-5 h-5" /><span>复制全部连接信息</span></>}
+                              </button>
                             </div>
                           </>
                         ) : (
