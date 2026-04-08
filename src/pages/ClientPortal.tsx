@@ -1850,14 +1850,21 @@ export default function ClientPortal() {
                           </div>
                         </div>
 
-                        {order.status === "fulfilled" && order.uuid && order.uuid !== "游客_未登录" && (
+                        {order.status === "fulfilled" && order.uuid && order.uuid !== "游客_未登录" && (() => {
+                          const isUuidFormat = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(order.uuid);
+                          const isSocks5 = !isUuidFormat;
+                          return (
                           <div className="bg-client-primary/10 border border-client-primary/20 p-4 rounded-xl">
                             <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm font-bold text-client-primary">🔑 节点凭证 (UUID)</span>
+                              <span className="text-sm font-bold text-client-primary">
+                                🔑 {isSocks5 ? "节点凭证 (SOCKS5 用户名)" : "节点凭证 (UUID)"}
+                              </span>
                               <div className="flex items-center gap-2">
-                                <button onClick={() => copyWithFeedback(order.uuid, `order-${order.id}`)} className="text-client-primary hover:opacity-70 flex items-center text-xs font-bold">
-                                  {copiedKey === `order-${order.id}` ? <><CheckCircle2 className="w-3 h-3 mr-1 text-success" /> 已复制</> : <><Copy className="w-3 h-3 mr-1" /> 复制</>}
-                                </button>
+                                {!isSocks5 && (
+                                  <button onClick={() => copyWithFeedback(order.uuid, `order-${order.id}`)} className="text-client-primary hover:opacity-70 flex items-center text-xs font-bold">
+                                    {copiedKey === `order-${order.id}` ? <><CheckCircle2 className="w-3 h-3 mr-1 text-success" /> 已复制</> : <><Copy className="w-3 h-3 mr-1" /> 复制</>}
+                                  </button>
+                                )}
                                 <button
                                   onClick={async () => {
                                     setLoginInput(order.uuid);
@@ -1892,13 +1899,17 @@ export default function ClientPortal() {
                                   }}
                                   className="bg-client-primary text-client-primary-foreground px-3 py-1 rounded-lg text-xs font-bold hover:opacity-90 transition-colors flex items-center gap-1"
                                 >
-                                  <ChevronRight className="w-3 h-3" /> 查看链接
+                                  <ChevronRight className="w-3 h-3" /> {isSocks5 ? "查看完整凭证" : "查看链接"}
                                 </button>
                               </div>
                             </div>
                             <code className="block bg-background p-2 rounded border border-border text-sm font-mono break-all">{order.uuid}</code>
+                            {isSocks5 && (
+                              <p className="text-xs text-muted-foreground mt-2">💡 点击「查看完整凭证」获取地址、端口、用户名和密码</p>
+                            )}
                           </div>
-                        )}
+                          );
+                        })()}
                       </div>
                     </div>
                   ))}
