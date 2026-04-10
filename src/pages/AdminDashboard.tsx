@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Settings, Server, QrCode, Bitcoin, CheckCircle2, Plus, Trash2, Package, ClipboardList, Search, ChevronLeft, ChevronRight, ShoppingCart, CreditCard, MapPin, ChevronDown, BookOpen } from "lucide-react";
+import { Settings, Server, QrCode, Bitcoin, CheckCircle2, Plus, Trash2, Package, ClipboardList, Search, ChevronLeft, ChevronRight, ShoppingCart, CreditCard, MapPin, ChevronDown, BookOpen, FileText } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { getAdminConfig, saveAdminConfig, testPanelConnection, adminGetPlans, adminCreatePlan, adminUpdatePlan, adminDeletePlan, adminGetOrders, adminDeleteOrder, adminBatchDeleteOrders, adminGetRegions, adminCreateRegion, adminUpdateRegion, adminDeleteRegion, adminAssignPlanRegion, adminUnassignPlanRegion, adminChangePassword, adminGetTutorials, adminCreateTutorial, adminUpdateTutorial, adminDeleteTutorial } from "@/lib/api";
+import { getAdminConfig, saveAdminConfig, testPanelConnection, adminGetPlans, adminCreatePlan, adminUpdatePlan, adminDeletePlan, adminGetOrders, adminDeleteOrder, adminBatchDeleteOrders, adminGetRegions, adminCreateRegion, adminUpdateRegion, adminDeleteRegion, adminAssignPlanRegion, adminUnassignPlanRegion, adminChangePassword, adminGetTutorials, adminCreateTutorial, adminUpdateTutorial, adminDeleteTutorial, adminGetArticles, adminCreateArticle, adminUpdateArticle, adminDeleteArticle } from "@/lib/api";
 import TutorialContentEditor from "@/components/TutorialContentEditor";
 
 interface Tutorial {
+  id: string;
+  title: string;
+  content: string;
+  sort_order: number;
+  enabled: boolean;
+}
+
+interface Article {
   id: string;
   title: string;
   content: string;
@@ -151,6 +159,7 @@ export default function AdminDashboard() {
   const [expandedRegionIds, setExpandedRegionIds] = useState<Set<string>>(new Set());
   const [regionSearch, setRegionSearch] = useState("");
   const [tutorials, setTutorials] = useState<Tutorial[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
   const navigate = useNavigate();
   const token = sessionStorage.getItem("admin_token") || "";
 
@@ -163,6 +172,7 @@ export default function AdminDashboard() {
     loadPlans();
     loadRegions();
     loadTutorials();
+    loadArticles();
   }, []);
 
   const loadConfig = async () => {
@@ -199,6 +209,13 @@ export default function AdminDashboard() {
     try {
       const res = await adminGetTutorials(token);
       if (res?.tutorials) setTutorials(res.tutorials);
+    } catch {}
+  };
+
+  const loadArticles = async () => {
+    try {
+      const res = await adminGetArticles(token);
+      if (res?.articles) setArticles(res.articles);
     } catch {}
   };
 
