@@ -335,7 +335,7 @@ export default function LandingPage() {
                 <svg className="lp-faq-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z" /></svg>
               </div>
               <div className="lp-faq-answer">
-                <div className="lp-faq-answer-inner" dangerouslySetInnerHTML={{ __html: faq.a }} />
+                <div className="lp-faq-answer-inner" dangerouslySetInnerHTML={{ __html: faq.a.includes('<') ? faq.a : faq.a.replace(/\n/g, '<br/>') }} />
               </div>
             </div>
           ))}
