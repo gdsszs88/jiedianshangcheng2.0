@@ -1617,7 +1617,7 @@ export default function AdminDashboard() {
                   <Plus className="w-4 h-4 mr-1" /> {btnStatus["addArticle"] || "添加文章"}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">💡 管理首页"常见疑问"板块的问答文章。标题为问题，内容为HTML格式的答案。</p>
+              <p className="text-xs text-muted-foreground">💡 管理首页"常见疑问"板块的问答文章。标题为问题，内容为纯文本答案（换行会自动显示）。</p>
 
               {articles.length === 0 ? (
                 <div className="text-center text-muted-foreground py-12 border border-dashed border-border rounded-xl">
