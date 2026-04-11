@@ -1617,7 +1617,7 @@ export default function AdminDashboard() {
                   <Plus className="w-4 h-4 mr-1" /> {btnStatus["addArticle"] || "添加文章"}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">💡 管理首页"常见疑问"板块的问答文章。标题为问题，内容为HTML格式的答案。</p>
+              <p className="text-xs text-muted-foreground">💡 管理首页"常见疑问"板块的问答文章。标题为问题，内容为纯文本答案（换行会自动显示）。</p>
 
               {articles.length === 0 ? (
                 <div className="text-center text-muted-foreground py-12 border border-dashed border-border rounded-xl">
@@ -1691,15 +1691,14 @@ export default function AdminDashboard() {
                           </button>
                         </div>
                       </div>
-                      {/* Content editor */}
                       <div>
-                        <label className="block text-xs text-muted-foreground mb-1">内容（HTML格式）</label>
+                        <label className="block text-xs text-muted-foreground mb-1">内容（纯文本，换行自动显示）</label>
                         <textarea
                           value={article.content}
                           onChange={e => setArticles(articles.map(a => a.id === article.id ? { ...a, content: e.target.value } : a))}
                           rows={6}
-                          className="w-full border border-input p-2 rounded-lg text-sm bg-background focus:ring-2 focus:ring-amber-500 outline-none font-mono"
-                          placeholder="<p>在此输入HTML格式的内容...</p>"
+                          className="w-full border border-input p-2 rounded-lg text-sm bg-background focus:ring-2 focus:ring-amber-500 outline-none"
+                          placeholder="在此输入纯文本内容，换行会自动保留..."
                         />
                       </div>
                     </div>
