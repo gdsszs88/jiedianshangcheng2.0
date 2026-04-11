@@ -1700,7 +1700,6 @@ export default function AdminDashboard() {
                           className="w-full border border-input p-2 rounded-lg text-sm bg-background focus:ring-2 focus:ring-amber-500 outline-none"
                           placeholder="在此输入纯文本内容，换行会自动保留..."
                         />
-                        />
                       </div>
                     </div>
                   ))}
